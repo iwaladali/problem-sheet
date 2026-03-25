@@ -1,0 +1,65 @@
+int n;
+vector<vector<int>>dp;
+vector<vector<int>>next_f;
+void negcycle(){
+  for(int k=1;k<=n;k++){
+    for(int i=1;i<=n;i++){
+      for(int j=1;j<=n;j++){
+        
+        if(dp[i][k]+dp[k][j]<dp[i][j]){
+          dp[i][j]=minf;
+          next_f[i][j]=-1;
+        }
+        
+      }
+    }
+  } 
+}
+
+void setup_floyd(vector<vector<int>>adj){
+  dp.assign(n+1,vector<int>(n+1,inf));
+  next_f.assign(n+1,vector<int>(n+1,-1));
+  for(int i=1;i<=n;i++)
+  for(int j=1;j<=n;j++){
+    dp[i][j]=adj[i][j];
+    if(adj[i][j]!=inf)
+    next_f[i][j]=j;
+  }
+}
+
+void Floyd_Warshall(vector<vector<int>>adj){
+  setup_floyd(adj);  
+  for(int k=1;k<=n;k++){
+    for(int i=1;i<=n;i++){
+      
+      for(int j=1;j<=n;j++){
+        
+        
+        if(dp[i][k]+dp[k][j]<dp[i][j]){
+          dp[i][j]=dp[i][k]+dp[k][j];
+          next_f[i][j]=next_f[i][k];
+        }
+        
+      }
+    }
+  }
+  negcycle();
+}
+
+vector<int> reconstruct_shortpath(int start,int end){
+  vector<int>ans;
+  if(dp[start][end]==inf)
+  return vector<int>();
+  int i=start;
+  for(;i!=end;i=next_f[i][end]){
+    if(next_f[i][end]==-1)
+    return vector<int>();
+    
+    ans.emplace_back(i);
+  }
+  if(next_f[i][end]==-1)
+  return vector<int>();
+  ans.emplace_back(end);
+  return ans;
+}
+

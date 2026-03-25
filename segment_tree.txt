@@ -1,0 +1,66 @@
+
+struct item{
+  int n,m;
+};
+
+struct ST {
+  int sz;
+  vector<item>arr;
+  item Nature_item={INT_MAX,0};
+  item item_set;
+
+  item merge(item a,item b){
+    if(a.n<b.n) return a;
+    if(a.n>b.n) return b;
+    item x;
+    x.n=a.n;
+    x.m=b.m+a.m;
+    return x; 
+  }
+  void bulid(int n){
+    sz=1;
+    while(sz<n)sz*=2;
+    arr.assign(2*sz,Nature_item);
+  }
+  void set(int i,int v,int x,int l,int r){
+    
+    if(r-l==1){
+      arr[x]=item_set;
+      return;
+    }
+    
+    int mid=(l+r)/2;
+   if(i<mid)
+    set(i,v,x*2+1,l,mid);
+    else
+    set(i,v,x*2+2,mid,r);
+    
+    arr[x]=merge(arr[2*x+1],arr[2*x+2]);
+ 
+  }
+  void set(int i,int v){
+    item_set.n=v;
+    item_set.m=1;
+    set(i,v,0,0,sz);
+  }
+  item min_fnc(int l,int r,int x,int lx,int rx){
+    
+    
+    if(rx<=l||lx>=r)
+    return Nature_item;
+    
+    if(rx<=r&&lx>=l)
+    return arr[x];
+    int mid=(lx+rx)/2;
+    item left_s= min_fnc(l,r,x*2+1,lx,mid);
+    item right_s= min_fnc(l,r,x*2+2,mid,rx);
+    
+    return merge(right_s,left_s);
+    
+  }
+   item min_fnc(int l,int r){
+  item res=min_fnc(l,r,0,0,sz);
+    
+    return res;
+  }
+};

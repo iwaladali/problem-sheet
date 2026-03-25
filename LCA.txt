@@ -1,0 +1,45 @@
+ 
+vector<vector<int>>up,adj;//[node][(log)ith]
+vector<int>depth;
+int logs=20;
+void DFS(int a,int dth){
+     for(int b:adj[a]){
+      up[b][0]=a;
+      depth[b]=dth+1;
+    for(int j=1;j<logs;j++)
+      up[b][j]=up[up[b][j-1]][j-1];
+    DFS(b,dth+1);
+ }
+}
+int Query(int node,int k){
+  
+  if(k>depth[node])
+  return -1;
+  
+  bitset<32>bs(k);
+  for(int i=0;i<logs;i++){
+    if(bs[i]==1)
+    node=up[node][i];
+  }
+  return node;
+}
+int get_lca(int a,int b){
+    if(depth[b]>depth[a])
+    swap(a,b);
+    int k=depth[a]-depth[b];
+    if(k!=0)
+    a=Query(a,k);
+    if(a==b)
+    return a;
+    int ans=INT_MAX;
+    for(int j=logs-1;j>=0;j--){
+        if(up[a][j]!=up[b][j]){
+          a=up[a][j];
+          b=up[b][j];
+        }else if(up[a][j]!=0){
+          ans=up[a][j];
+        }
+    }
+    
+    return ans;
+}

@@ -1,0 +1,26 @@
+#define inf 1e14+7
+#define minf -1e14+7
+
+
+vector<ll> Bellman_Ford(int n,int start,int end,vector<vector<pair<int,int>>>&adj) {
+  vector<ll>dis(n+1,inf);
+   dis[start]=0;
+
+  for(int j=1;j<n;j++)
+  for(int i=1;i<=n;i++)
+  for(auto pa:adj[i]){
+      if(dis[i]!=inf&&dis[i]+pa.sc<dis[pa.fr])
+      dis[pa.fr]=dis[i]+pa.sc;
+  }
+
+  for(int j=1;j<=n;j++)
+  for(int i=1;i<=n;i++)
+  for(auto pa:adj[i]){
+      if(dis[i]!=inf&&dis[i]+pa.sc<dis[pa.fr])
+      dis[pa.fr]=minf;
+  }
+  
+  
+  return dis;
+  
+}

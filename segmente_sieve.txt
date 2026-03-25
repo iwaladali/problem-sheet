@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+// دالة تولد جميع الأوليات ≤ limit باستخدام segmented sieve
+vector<ll> segmented_sieve(ll limit) {
+    ll segment_size = 1e7; // حجم كل segment (يمكن تغييره حسب الذاكرة)
+    vector<ll> primes;
+
+    // 1️⃣ أولًا نولد primes صغيرة ≤ sqrt(limit)
+    ll sqrt_limit = sqrt(limit) + 1;
+    vector<bool> isPrime(sqrt_limit+1, true);
+    isPrime[0] = isPrime[1] = false;
+    for(ll i = 2; i*i <= sqrt_limit; i++){
+        if(isPrime[i]){
+            for(ll j = i*i; j <= sqrt_limit; j += i)
+                isPrime[j] = false;
+        }
+    }
+
+    vector<ll> small_primes;
+    for(ll i = 2; i <= sqrt_limit; i++)
+        if(isPrime[i]) {
+            small_primes.push_back(i);
+            primes.push_back(i); // هذه أوليات صغيرة نضيفها مباشرة
+        }
+
+    // 2️⃣ الآن نولد أوليات باقي الأعداد بالتقسيم إلى segments
+    ll low = sqrt_limit + 1;
+    ll high = low + segment_size - 1;
+
+    while(low <= limit){
+        if(high > limit) high = limit;
+
+        vector<bool> mark(high - low + 1, true);
+
+        // علم مضاعفات كل prime صغير في هذا segment
+        for(ll p : small_primes){
+            ll start = ((low + p - 1) / p) * p;
+            for(ll j = start; j <= high; j += p)
+                mark[j - low] = false;
+        }
+
+        // أضف أوليات هذا segment
+        for(ll i = low; i <= high; i++){
+            if(mark[i - low])
+                primes.push_back(i);
+        }
+
+        low += segment_size;
+        high += segment_size;
+    }
+
+    return primes;
+}
+
+int main() {
+    ll limit;
+    cout << "Enter limit: ";
+    cin >> limit;
+
+    vector<ll> primes = segmented_sieve(limit);
+
+    cout << "Number of primes <= " << limit << ": " << primes.size() << "\n";
+    cout << "First 10 primes: ";
+    for(int i = 0; i < min((ll)10, (ll)primes.size()); i++)
+        cout << primes[i] << " ";
+    cout << "\n";
+}

@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+#define ll long long
+#define int long long
+const int MAX_N = 200005;
+const int LOG = 21;
+int m[MAX_N][LOG], arr[MAX_N];
+int bin_log[MAX_N];
+
+ll query(int l, int r) {
+    int len = r - l + 1;
+    int k = bin_log[len];
+    return min(m[l][k], m[r - (1 << k) + 1][k]);
+}
+
+signed main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    int n, q;
+    cin >> n;
+    bin_log[1] = 0;
+    for (int i = 2; i <= n; i++) {
+        bin_log[i] = bin_log[i / 2] + 1;
+    }
+    map<int, vector<int>> where, pre;
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+        where[arr[i]].push_back(i);
+        m[i][0] = arr[i];
+    }
+    for (int k = 1; k < LOG; k++) {
+        for (int i = 0; i + (1 << k) - 1 < n; i++) {
+            m[i][k] = min(m[i][k - 1], m[i + (1 << (k - 1))][k - 1]);
+        }
+    }
+    for (auto [num, vec]: where) {
+        pre[num].push_back(0);
+        for (int i = 1; i < vec.size(); i++) {
+            int dif = (vec[i] - vec[i - 1]) - 1;
+            int calc = dif * (dif + 1) / 2;
+            pre[num].push_back(calc);
+        }
+        for (int i = 1; i < pre[num].size(); i++) {
+            pre[num][i] += pre[num][i - 1];
+        }
+    }
+
+    cin >> q;
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        l--;
+        r--;
+        int mn = query(l, r);
+        int a = lower_bound(where[mn].begin(), where[mn].end(), l) - where[mn].begin();
+        int b = upper_bound(where[mn].begin(), where[mn].end(), r) - where[mn].begin();
+        if (a == where[mn].size() || !b || (a == b - 1)) {
+            cout << 0 << '\n';
+            continue;
+        }
+        b--;
+        int len = where[mn][b] - where[mn][a] + 1;
+        int all = len * (len + 1) / 2;
+        int neg = pre[mn][b] - pre[mn][a];
+        neg++;
+        int add = (len - 1) * ((r - where[mn][b]) + (where[mn][a] - l));
+        cout << all - neg + add << '\n';
+    }
+}

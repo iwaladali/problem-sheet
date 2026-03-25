@@ -1,0 +1,13 @@
+Divisor Sieve O(n log n)
+int divisors[n + 1];
+for (int i = 1; i <= n; ++i)
+ for (int j = i; j <= n; j += i)
+  ++divisors[j];
+
+
+-----------------------------
+
+vector<vector<int>>divisors(n+1);
+    for (int i = 1; i <= n; ++i)
+      for (int j = i; j <= n; j += i)
+         divisors[j].push_back(i);
