@@ -1,0 +1,105 @@
+Basic DP
+↓
+1D DP
+↓
+LIS
+↓
+Knapsack
+↓
+2D DP (LCS)
+↓
+Grid DP
+↓
+DP Optimization
+↓
+Bitmask DP
+↓
+Tree DP
+↓
+Digit DP
+↓
+Build Output
+
+الترتيب الصحيح لمواضيع DP
+🟢 1. Introduction / Basic DP
+
+👉 البداية الإلزامية
+
+Fibonacci
+Climbing Stairs
+Memoization vs Tabulation
+
+🎯 الهدف:
+تفهم:
+
+يعني شو DP أصلاً
+
+🟡 2. 1D DP (أساس كل شيء)
+Maximum Subarray (Kadane)
+Basic dp[i]
+Simple transitions
+
+🎯 هون بتتعلم:
+
+كيف تبني state
+🟠 3. LIS (Longest Increasing Subsequence)
+LIS O(n²)
+LIS باستخدام binary search
+
+🎯 مهم جدًا لأنه:
+
+بفتح عقلك على optimization
+🔵 4. Knapsack / Coin Change 🔥
+0/1 Knapsack
+Unbounded Knapsack
+Coin Change
+
+🎯 هذا:
+
+أهم Topic بالـ DP كله
+
+🟣 5. 2D DP
+LCS
+Edit Distance
+
+🎯 هون بتفهم:
+
+dp[i][j]
+🟤 6. Grid DP
+Number of paths
+Minimum path sum
+Obstacles
+
+🎯 انتقالات:
+
+فوق / يسار
+🔴 7. DP Optimization
+Prefix sums
+Binary search + DP
+Monotonic queue
+
+🎯 لتسريع الحلول
+
+⚫ 8. Bitmask DP
+dp[mask]
+subsets
+
+🎯 يستخدم في:
+
+permutations
+TSP
+🔺 9. Tree DP
+dp[node][state]
+
+🎯 DP على graph (شجرة)
+
+🔶 10. Digit DP (متقدم 🔥🔥)
+أرقام + constraints
+
+🎯 من أصعب الأنواع
+
+🟪 11. Build Output
+reconstruct answer
+tracking
+
+🎯 ترجع الحل نفسه مش بس القيمة
