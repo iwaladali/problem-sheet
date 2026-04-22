@@ -1,0 +1,17 @@
+long long sum_of_contribution(vector<int>& a) {
+    int n = a.size();
+
+    vector<int> prev = prev_smaller(a);
+    vector<int> next = next_smaller(a);
+
+    long long ans = 0;
+
+    for (int i = 0; i < n; i++) {
+        long long left = i - prev[i];
+        long long right = next[i] - i;
+
+        ans += 1LL * a[i] * left * right;
+    }
+
+    return ans;
+}

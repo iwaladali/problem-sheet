@@ -1,0 +1,19 @@
+vector<int> next_greater(vector<int>& a) {
+    int n = a.size();
+    vector<int> nxt(n, -1);
+    stack<int> st; // نخزن indices
+
+    for (int i = n - 1; i >= 0; i--) {
+        while (!st.empty() && a[st.top()] <= a[i]) {
+            st.pop();
+        }
+
+        if (!st.empty()) {
+            nxt[i] = st.top();
+        }
+
+        st.push(i);
+    }
+
+    return nxt;
+}
