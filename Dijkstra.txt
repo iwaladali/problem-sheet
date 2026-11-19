@@ -1,34 +1,63 @@
 
+struct Node
+{
+   ll  cost;
+   int node;
+   Node(ll c, int n){
+      cost= c;
+      node= n;
+      
+   }
+ 
+   
+};
+ 
+struct Compare {
+    bool operator()(const Node& a, const Node& b) const {
+        return a.cost > b.cost;
+    }
+};
+ 
+   
 vector<int>par;
-vector<ll> Dijkstra_s(int n,int start,int end,vector<vector<pair<int,int>>>adj) {
-  vector<bool>vis(n+1);
-  priority_queue<pair<ll, int>,vector<pair<ll, int>>, greater<pair<ll, int>>>pq;
-  vector<ll>dis(n+1,__LONG_LONG_MAX__);
-  dis[start]=0;
-  pq.push({0,start});
-  vis[start]=true;
-  bool ok=false;
-  while(!pq.empty()){
-    pair<ll,ll>point=pq.top();
-    vis[point.sc]=true;
+int n;
+ll Dijkstra_s(int n,int start,int end, vector<vector<Node>>&adj) {
+    par.resize(n+1);
+    priority_queue<Node, vector<Node>, Compare>pq;  
+ 
+
+    vector<ll>dist(n+1, inf);
+  
+    pq.push(Node(0, start));
+ 
+    dist[start]=0;
+ 
+    while(!pq.empty()){
+    
+    Node point=pq.top();
+  
     pq.pop();
-    if(point.sc==end)
-    break;
-    if(point.fr>dis[point.sc]){      
+ 
+    if(point.node==end)
+    return point.cost;
+ 
+    if(point.cost>dist[point.node])    
       continue;
-  }
-      for(auto ch:adj[point.sc]){
-        if(!vis[ch.fr])
-        if((dis[ch.fr]>(dis[point.sc])+ch.sc))
-       {
-        par[ch.fr]=point.sc;
-         dis[ch.fr]=(dis[point.sc])+ch.sc;
-        pq.push({dis[point.sc]+ch.sc,ch.fr});
+  
+      for(auto ch:adj[point.node]){
+                     
+        int cost= point.cost+ch.cost;
+ 
+        if (cost<dist[ch.node]){
+              dist[ch.node]= cost ; 
+              par[ch.node]=point.node;           
+              pq.push(Node(dist[ch.node], ch.node));                        
       }
       }
     
   }
-  return dis;
+  return -1;
   
 }
+
  

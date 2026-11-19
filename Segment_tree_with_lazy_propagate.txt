@@ -1,0 +1,252 @@
+#include <bits/stdc++.h>
+#include <numeric>
+
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+using namespace std;
+ 
+#define ld long double
+#define ll long long
+#define endl "\n"
+#define fr first
+#define sc second
+#define all(v) v.begin(),v.end()
+#define rall(v) v.rbegin(),v.rend()
+#define int long long
+#define float double
+#define inf 1e14+7
+#define minf -1e14+7
+
+#define fastIO  ios_base::sync_with_stdio(false); cin.tie(NULL);
+
+void fileIO(){
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+}
+
+const int Mod=998244353;
+
+struct Node
+{
+   
+  int num;
+  int lazy;
+   bool isLaze=false;
+
+  Node(int c){
+   num=c;   
+   lazy=0;
+   isLaze=false;
+   
+} 
+
+
+void change(int c, int l, int r){   
+   
+   num|=c;
+   lazy|=c;
+   isLaze=true;
+   
+} 
+      
+};
+
+
+struct SegTree{
+   // 0 - index && r not included
+  int treesize ;
+  int nutral;
+  vector<Node>SegData;
+  
+  SegTree(int n){
+     
+   treesize =1;
+   while(treesize<n)
+   treesize*=2;
+   nutral=0xFFFFFFFF;
+   SegData.assign(2*treesize,Node(nutral));
+
+  }
+
+  void init(vector<int>&v,int ni,int lx,int rx){
+    if(rx-lx==1){
+      if(lx<v.size())
+   SegData[ni]=Node(v[lx]);
+   return ;
+   }
+
+   int mid=(lx+rx)/2;
+
+   
+   init(v,(ni*2)+1,lx,mid);
+   init(v,(ni*2)+2,mid,rx);
+  
+  SegData[ni]=merge(SegData[2*ni+1],SegData[2*ni+2]);
+
+  }
+
+  void init(vector<int>&v){
+   init(v,0,0,treesize);
+  }
+
+  //change
+  
+  Node merge( Node &lf , Node &ri){
+     Node ans=Node(nutral);
+     
+     ans.num= (lf.num) & (ri.num);
+     
+      return ans;
+  }
+
+  void propagate(int lx, int rx, int ni){
+      if((rx-lx==1)||SegData[ni].isLaze==false)
+      return;
+
+   int mid=(rx+lx)/2;
+
+   SegData[(ni*2)+1].change(SegData[ni].lazy , lx, mid);
+   SegData[(ni*2)+2].change(SegData[ni].lazy , mid, rx);    
+   
+   SegData[ni].lazy=0;
+   SegData[ni].isLaze=false;
+   
+  }
+
+  void set_range(int &l, int &r, int &val,int ni, int lx, int rx){
+     propagate(lx, rx,ni);
+     if( r<=lx || rx <= l)
+     return ; 
+
+ 
+   int mid=(lx+rx)/2;
+
+   if(lx>=l&&rx<=r){
+ 
+      SegData[ni].change(val, lx, rx);
+      return ; 
+   }
+
+   
+      
+   set_range(l, r, val, ni*2+1, lx, mid);
+   set_range(l, r, val, ni*2+2, mid, rx);
+   
+   SegData[ni]=merge(SegData[(ni*2)+1],SegData[(ni*2)+2]);
+
+  }
+
+  void set_range(int l, int r, int val ){
+   set_range(l, r, val, 0, 0, treesize);
+   
+  }
+  
+//   void set(int indx, int val, int ni, int lx, int rx){
+//    if(rx-lx==1){
+      
+//    SegData[ni].change(val,0,1);
+//    return ;
+//    }
+
+//    int mid=(lx+rx)/2;
+
+//    if(indx>=lx&&indx<mid)
+//    set(indx,val,(ni*2)+1,lx,mid);
+
+//   else
+//    set(indx,val,(ni*2)+2,mid,rx);
+
+//    SegData[ni]=merge(SegData[(ni*2)+1],SegData[(ni*2)+2]);
+  
+
+   
+//   }
+
+//   void set(int indx, int val){
+//    set(indx,val,0,0,treesize);
+//   }
+
+  
+  
+  
+  Node get(int l, int r, int ni, int lx, int rx){
+   
+     if(lx>=l&&rx<=r){
+       
+        return SegData[ni];
+        
+      }
+      
+      if( r<=lx || rx <= l){
+         return Node(nutral);
+      }
+      
+   propagate(lx, rx, ni);
+
+   int mid=(lx+rx)/2;
+   
+
+   Node left= get( l, r, (ni*2)+1, lx, mid);
+   Node right= get( l, r, (2*ni)+2, mid, rx);
+
+   Node ans= merge( left , right);
+  
+   return ans;
+  }
+
+
+
+  int get(int l, int r){
+
+   Node x= get(l, r, 0, 0, treesize);
+   
+   return x.num;
+  
+  }
+ 
+
+
+};
+
+
+  
+int32_t main() {
+   fastIO
+  // fileIO();
+   int n;
+   int m;
+   cin>>n>>m;
+
+   vector<int> v(n);
+   // for(int &i:v)
+   // cin>>i;
+
+   SegTree segtree(n);
+
+    segtree.init(v);
+
+   while(m--){
+         int op;
+         cin>>op;
+
+         int l,r;
+         cin>>l>>r;
+
+         if(op==1){
+            int v;
+            cin>>v;
+            segtree.set_range(l, r, v);
+         }else{
+
+            cout<<segtree.get(l, r)<<endl;
+           
+         }
+   }
+ 
+}
+
+/*    
+*    /\_/\
+*   (= ._.)
+*   / >  \>
+*/

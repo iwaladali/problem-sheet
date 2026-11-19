@@ -1,0 +1,115 @@
+
+struct DSU{
+  int timer ;
+    vector<int>parent;
+    vector<int>size;
+    vector<int>deepth;
+    vector<multiset<int>>max_element;
+    int ans;
+    int component, max_set;
+    
+    int deep;
+    
+    
+    DSU(int n){
+      timer=0;
+      parent.resize(n+1);
+      size.resize(n+1);
+      deepth.resize(n+1);
+      max_element.assign(n+1, multiset<int>());
+      
+      for(int i=0; i<=n ;i++){
+        parent[i]=i;
+        size[i]=1;    
+        
+      }
+      component=n;
+      max_set=1;
+
+    }
+  void insert(int n, int x){
+    n=find(n);
+    max_element[n].insert(x);
+  }
+  void erase(int n, int x){
+    n=find(n);
+    max_element[n].erase(max_element[n].find(x));
+  }
+  int find(int i){
+    if(parent[i]==i)
+    return i;
+    return parent[i]=find(parent[i]);
+    
+  }
+
+  bool join(int u, int v){
+    int root_u=find(u);    
+    int root_v=find(v);
+    
+    if(root_v==root_u)
+      return false;
+    
+    
+    if(size[root_v]>size[root_u]){
+      swap(root_u, root_v);
+    }
+    
+   
+    parent[root_v]=root_u;
+    size[root_u]+=size[root_v];
+    for(int i:max_element[root_v])
+      insert(root_u, i);
+    component--;
+    max_set=max(max_set, size[root_u]);
+     
+    return true;
+  }
+  
+  int get_max(int n){
+    return *(max_element[find(n)].rbegin());
+  }
+  bool _join(int u, int v){
+    int root_u=find(u);    
+    int root_v=find(v);
+    
+    if(root_v==root_u)
+      return false;   
+    parent[root_v]=root_u;
+    
+    
+    return true;
+  }
+  
+  set<int> represents(){
+    set<int>s;
+    for(int i=1; i<parent.size(); i++)
+    if(i==parent[i])
+      s.insert(i);
+      s.erase(0);
+    return s;
+  }
+  
+  bool check(int u, int v){
+    int root_u=find(u);    
+    int root_v=find(v);
+    
+    return (root_v==root_u);
+  }
+
+  int get(int n){
+    if(parent[n]==n)
+      return n;
+   
+    int deep_pa=deepth[parent[n]];
+    int pa=get(parent[n]);
+   
+    int diff=abs(deep_pa-deepth[parent[n]]);
+    if((deepth[n]==0))
+    deepth[n]=deepth[parent[n]]+1;
+    else
+    deepth[n]+=deepth[parent[n]];
+    parent[n]=pa;
+    return pa;
+
+  }
+};

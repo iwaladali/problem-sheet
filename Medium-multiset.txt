@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct MedianSet {
+    multiset<int> s;
+    multiset<int>::iterator mid;
+
+    // Insert x
+    void insert(int x) {
+        if (s.empty()) {
+            s.insert(x);
+            mid = s.begin();
+            return;
+        }
+
+        int n = s.size();
+
+        s.insert(x);
+
+        if (n % 2 == 1) {
+            // old size = odd
+            // new size = even
+
+            if (x <= *mid)
+                --mid;
+        }
+        else {
+            // old size = even
+            // new size = odd
+
+            if (x > *mid)
+                ++mid;
+        }
+    }
+
+    // Erase ONE occurrence of x
+    void erase(int x) {
+        if (s.empty())
+            return;
+
+        auto it = s.find(x);
+
+        if (it == s.end())
+            return;
+
+        int n = s.size();
+
+        if (n == 1) {
+            s.erase(it);
+            return;
+        }
+
+        if (n % 2 == 1) {
+            // old size = odd
+            // new size = even
+
+            if (x <= *mid)
+                ++mid;
+        }
+        else {
+            // old size = even
+            // new size = odd
+
+            if (x > *mid)
+                --mid;
+        }
+
+        s.erase(it);
+    }
+
+    // Minimum
+    int getMin() {
+        return *s.begin();
+    }
+
+    // Maximum
+    int getMax() {
+        return *prev(s.end());
+    }
+
+    // Median (lower median)
+    int getMedian() {
+        return *mid;
+    }
+
+    int size() {
+        return s.size();
+    }
+};
